@@ -1,7 +1,6 @@
 /**
  * berliner-kaffeeroesterei.de
  */
-// //BOD 
 function ccb() {
 	// MEMBERS
 	this.mahlgrad = "ungemahlen";/* defaultwert */
