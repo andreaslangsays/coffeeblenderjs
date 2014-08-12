@@ -16,29 +16,31 @@ function ccb() {
 	this.s_name = new Array();/* Sorten Name */
 	this.s_preis = new Array();/* Sortenpreis */
 	this.s_fix = new Array();/*
-								 * boolscher wert - Anteil vor Veränderung
-								 * schützen
-								 */
+				 * array(bool,bool) - Anteil vor Veränderung
+				 * schützen
+				 */
 	this.s_taste = new Array();/*
-								 * Zahlenwert zwischen 1 und 5 - entspricht
-								 * Bohnensystem im shop
-								 */
-	this.c_preis = new Array();/* current Preis... Preis pro Anteil */
-	this.max_s = 10;/* maximale Anzahl Sorten*/
-	this.tableheigth = 590;/*Höhe der Tabelle(Mühle)*/
-	this.min_prozent = 5;
+				 * array(int,int) zwischen 1 und 5 - entspricht
+				 * Bohnensystem im shop
+				 */
+	this.c_preis = new Array();/* array(float,float) ) current Preis... Preis pro Anteil */
+	this.max_s = 10; /* int  maximale Anzahl Sorten*/
+	this.tableheigth = 590;/* int Höhe der Tabelle(Mühle)*/
+	this.min_prozent = 5 /*float minimum Prozent value */;
 }
-// METHODS
-// //
+/** 
+ * set given/default values on startup
+ */
 ccb.prototype.init = function(c_id, c_gewicht, c_titel, c_mahlgrad) {
 	// Wiederherstellung der Mischung bei Rückkehr auf die Seite
 	this.ccb_id = (typeof c_id != 'number') ? 0 : c_id;
 	this.gewicht = (typeof c_gewicht != 'number') ? this.gewicht : c_gewicht;
 	this.titel = (typeof c_titel != 'string')? "Kaffeename?": c_titel;
 	this.mahlgrad = (typeof c_mahlgrad != 'string')? "ungemahlen": c_mahlgrad;
-
 };
-// //
+/**
+ * additional constructor
+ */
 ccb.prototype.init_values = function(args) {
 	// ID,name,preis,menge,taste
 	// Wiederherstellung der Mischung bei Rückkehr auf die Seite
@@ -60,8 +62,7 @@ ccb.prototype.init_values = function(args) {
 			this.c_preis.push(0);
 			this.s_fix.push(false);
 		}
-
-		this.recalc();
+		this.recalc(); /** call main calculation method*/
 	}
 };
 // //
@@ -70,7 +71,6 @@ ccb.prototype.setmenge = function(m) {
 		this.gewicht = m;
 	//while (this.get_summe() != 100)
 		this.recalc();
-
 	aktualisiere_alles();
 }
 // //
@@ -82,7 +82,7 @@ ccb.prototype.setmahlgrad = function(m) {
 // //
 ccb.prototype.fix = function(fID) {
 	this.s_fix[this.geti(fID)] = true;
-	this.currentID ="";
+	this.currentID = "";
 	aktualisiere_alles();
 }
 // //
@@ -127,11 +127,9 @@ ccb.prototype.allow_add = function() {
 	}
 	
 	if (this.s_id.length > 0) {
-		
 		var numNotFixed = 0;
 		var notFixedPercentage = 100;
 		var meanPercentage;
-					
 		for (var j = 0; j < this.s_id.length; j++) {
 			if (this.s_fix[j]) {
 				notFixedPercentage -= this.s_menge[j];
@@ -139,13 +137,11 @@ ccb.prototype.allow_add = function() {
 				numNotFixed++;										
 			}
 		}
-		
 		if (numNotFixed == 0) {
 			return false;
 		}
 		
 		meanPercentage = Math.floor(notFixedPercentage / (numNotFixed + 1));
-		
 		if (meanPercentage >= this.min_prozent) {
 			return true;
 		} else {
@@ -166,10 +162,10 @@ ccb.prototype.gh = function(v_h) {
 	return hoehe;
 }
 //
-ccb.prototype.free_amount = function(boo/*
-										 * d=Durchschnitt m=Maximum
-										 * a=SummeAllerFreienWerte t=freieTeile
-										 */) {
+ccb.prototype.free_amount = function(boo /* @param char
+					 * d=Durchschnitt m=Maximum
+					 * a=SummeAllerFreienWerte t=freieTeile
+					 */) {
 	if (this.s_id.length > 1) {
 		var anteile = 0;// Anteile = d
 		var ges = 0;// gesamtwert = m
